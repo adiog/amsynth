@@ -65,6 +65,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <algorithm>
+#include <src/GUI/KeyMapper.h>
 
 #include "gettext.h"
 #define _(string) gettext (string)
@@ -224,6 +225,7 @@ int main( int argc, char *argv[] )
 {
 	srand((unsigned) time(nullptr));
 
+	keyLoad();
 #ifdef ENABLE_REALTIME
 	sched_realtime();
 

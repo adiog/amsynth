@@ -32,6 +32,8 @@ GtkWidget *
 editor_pane_new(void *synthesizer, GtkAdjustment **adjustments, gboolean is_plugin);
 
 void modal_midi_learn(Param param_index);
+void modal_key_increase_learn(Param param_index);
+void modal_key_decrease_learn(Param param_index);
 
 G_END_DECLS
 

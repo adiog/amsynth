@@ -23,6 +23,7 @@
 #define _amsynth_main_h
 
 #include "types.h"
+#include "Synthesizer.h"
 
 #ifdef __cplusplus
 #include <vector>
@@ -48,5 +49,7 @@ extern void amsynth_audio_callback(
 
 }
 #endif
+
+extern Synthesizer *s_synthesizer;
 
 #endif

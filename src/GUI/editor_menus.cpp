@@ -33,6 +33,7 @@
 #include "../Synthesizer.h"
 
 #include "gui_main.h"
+#include "editor_pane.h"
 
 // External includes
 
@@ -57,6 +58,19 @@ show_midi_learn_dialog(GtkMenuItem *, gpointer user_data)
 }
 
 static void
+show_key_increase_learn_dialog(GtkMenuItem *, gpointer user_data)
+{
+    modal_key_increase_learn((Param)(int)(long)user_data);
+}
+
+static void
+show_key_decrease_learn_dialog(GtkMenuItem *, gpointer user_data)
+{
+    modal_key_decrease_learn((Param)(int)(long)user_data);
+}
+
+
+static void
 override_item_toggled(GtkCheckMenuItem *item, gpointer user_data)
 {
     Preset::setShouldIgnoreParameter((int)(long)user_data, gtk_check_menu_item_get_active (item) == TRUE);
@@ -73,6 +87,14 @@ controller_menu_new(int parameter)
 
     item = gtk_menu_item_new_with_label(_("Assign MIDI Controller..."));
     g_signal_connect(item, "activate", G_CALLBACK(show_midi_learn_dialog), (gpointer)(long)parameter);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+    item = gtk_menu_item_new_with_label(_("Assign Key Increasing Value..."));
+    g_signal_connect(item, "activate", G_CALLBACK(show_key_increase_learn_dialog), (gpointer)(long)parameter);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+    item = gtk_menu_item_new_with_label(_("Assign Key Decreaseing Value..."));
+    g_signal_connect(item, "activate", G_CALLBACK(show_key_decrease_learn_dialog), (gpointer)(long)parameter);
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
     item = gtk_check_menu_item_new_with_label(_("Ignore Preset Value"));

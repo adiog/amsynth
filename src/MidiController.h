@@ -52,6 +52,8 @@ public:
 	MidiController();
 
 	void	setPresetController	(PresetController & pc) { presetController = &pc; }
+	PresetController* getPresetController() { return presetController; }
+
 	void	SetMidiEventHandler(MidiEventHandler* h) { _handler = h; }
 	
 	void	HandleMidiData(const unsigned char *bytes, unsigned numBytes);

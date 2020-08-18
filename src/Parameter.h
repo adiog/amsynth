@@ -41,6 +41,8 @@
 
 class Parameter {
 public:
+    static constexpr const int RESOLUTION = 128;
+    static constexpr const float NORMALIZED_STEP = 1.0f / RESOLUTION;
 
 	enum class Law {
 		kLinear,		// offset + base * value
@@ -83,14 +85,52 @@ public:
 	// min/max values apply for calls to setValue() not ControlValue
 	float			getMin			() const { return _min; }
 	float			getMax			() const { return _max; }
+    float			getRange		() const { return _max - _min; }
 
 	// @return the increment value
 	float			getStep			() const { return _step; }
+
+	float			getNormalizedStep			() const { return 1.0f / (_max - _min); }
 	// @returns The number of discrete steps allowable in this Parameter.
 	int				getSteps		() const { return _step > 0.f ? (int) ((_max - _min) / _step) : 0; }
 
 	// Set this parameter to a random value (in it's allowable range)
 	void			randomise		();
+
+	float getKeyNormStep() {
+        const int steps = getSteps();
+	    return steps > 0 ? (1.0f / steps) : NORMALIZED_STEP;
+	}
+
+	void increase() {
+	    const float normalizedDiff = getKeyNormStep();
+	    const float normalizedValue = getNormalisedValue();
+	    const float value = normalizedValue + normalizedDiff;
+	    if (value > 1.0f) {
+	        if (_step > 0) {
+	            setNormalisedValue(0.0f);
+	        } else {
+	            setNormalisedValue(1.0f);
+	        }
+	    } else {
+            setNormalisedValue(value);
+        }
+	}
+
+	void decrease() {
+        const float normalizedDiff = getKeyNormStep();
+        const float normalizedValue = getNormalisedValue();
+        const float value = normalizedValue - normalizedDiff;
+        if (value < 0.0f) {
+            if (_step > 0) {
+                setNormalisedValue(1.0f);
+            } else {
+                setNormalisedValue(0.0f);
+            }
+        } else {
+            setNormalisedValue(value);
+        }
+	}
 
 	// The label assocaited with this Parameter. (e.g. "seconds")
 	const std::string getLabel		() const { return _label; }

@@ -43,6 +43,8 @@
 
 
 static MIDILearnDialog *midiLearnDialog;
+KeyLearnDialog *keyIncreaseLearnDialog;
+KeyLearnDialog *keyDecreaseLearnDialog;
 
 
 struct MainWindow : public UpdateListener
@@ -316,10 +318,25 @@ main_window_new(Synthesizer *synthesizer, GenericOutput *audio)
 	g_signal_connect(G_OBJECT(mainWindow->window), "delete-event", G_CALLBACK(delete_event), mainWindow);
 	g_signal_connect(G_OBJECT(mainWindow->window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
+    gtk_widget_add_events(mainWindow->window, GDK_KEY_PRESS_MASK);
+    g_signal_connect(G_OBJECT(mainWindow->window), "key_press_event", G_CALLBACK(keypress_function), NULL);
+
 	midiLearnDialog = new MIDILearnDialog(
 			synthesizer->getMidiController(),
 			synthesizer->getPresetController(),
 			GTK_WINDOW(mainWindow->window));
+
+	keyIncreaseLearnDialog = new KeyLearnDialog(
+	        KeyBehaviour::Increase,
+            synthesizer->getMidiController(),
+            synthesizer->getPresetController(),
+            GTK_WINDOW(mainWindow->window));
+
+	keyDecreaseLearnDialog = new KeyLearnDialog(
+            KeyBehaviour::Decrease,
+            synthesizer->getMidiController(),
+            synthesizer->getPresetController(),
+            GTK_WINDOW(mainWindow->window));
 
 	g_idle_add(startup_check, mainWindow);
 
@@ -336,4 +353,16 @@ void
 modal_midi_learn(Param param_index) // called by editor_pane upon right-clicking a control
 {
 	midiLearnDialog->run_modal(param_index);
+}
+
+void
+modal_key_increase_learn(Param param_index)
+{
+    keyIncreaseLearnDialog->run_modal(param_index);
+}
+
+void
+modal_key_decrease_learn(Param param_index)
+{
+    keyDecreaseLearnDialog->run_modal(param_index);
 }
